@@ -37,3 +37,7 @@
 .bg-homepage{
      background: #F4F6FF;
 }
+.MuiPaper-root{
+     box-shadow: unset !important;
+     border: 1px solid #E0E0E0 !important;
+}

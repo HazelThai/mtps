@@ -1,7 +1,6 @@
 "use client";
 
 import { store } from "@/store";
-import theme from "@/theme";
 import { ThemeProvider } from "@mui/material";
 import { Montserrat } from "next/font/google";
 import { usePathname } from "next/navigation";
@@ -22,15 +21,22 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   const pathname = usePathname();
-  const publicPath = ["login", "reset-password", "forgot-password"].includes(pathname.split("/")[1]);
+  const publicPath = ["login", "reset-password", "forgot-password"].includes(
+    pathname.split("/")[1]
+  );
   return (
     <html lang="en">
       <body className={`${montserrat.variable} antialiased`}>
-        <Provider store={store}>
-          <ThemeProvider theme={theme}>
+        <AuthProvider>
+          <Provider store={store}>
+            <ThemeProvider theme={{}}>{children}</ThemeProvider>
+          </Provider>
+        </AuthProvider>
+        {/* <Provider store={store}>
+          <ThemeProvider theme={{}}>
             <AuthProvider>{children}</AuthProvider>
           </ThemeProvider>
-        </Provider>
+        </Provider> */}
       </body>
     </html>
   );

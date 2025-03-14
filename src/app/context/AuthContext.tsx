@@ -1,12 +1,13 @@
 // src/app/context/AuthContext.tsx
 import { createContext, useContext, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { getToken } from "@/utils/token";
+import { getToken, setToken } from "@/utils/token";
 
 interface AuthContextType {
   isAuthenticated: boolean;
   loading: boolean;
   logout: () => void;
+  login: (token: string) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -22,11 +23,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setIsAuthenticated(true);
     } else {
       setIsAuthenticated(false);
-      router.push("/");
     }
     setLoading(false);
   }, []);
 
+  const login = (token: string) => {
+    setToken(token);
+    setIsAuthenticated(true);
+  };
   const logout = () => {
     removeToken();
     setIsAuthenticated(false);
@@ -34,7 +38,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, loading, logout }}>
+    <AuthContext.Provider value={{ isAuthenticated, loading, logout, login }}>
       {children}
     </AuthContext.Provider>
   );

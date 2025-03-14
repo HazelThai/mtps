@@ -5,6 +5,9 @@ const nextConfig: NextConfig = {
   // experimental: {
   //   middlewarePrefetch: 'strict',
   // }
+  images: {
+    domains: ["www.google.com"],
+  }
 };
 
 export default nextConfig;

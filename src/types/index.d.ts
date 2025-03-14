@@ -1,7 +1,7 @@
 export namespace AppTypes {
      export type Status = 'Public' | 'Private';
      export type Point = 3 | 5 | 7 | 10;
-     export type Category = "All" | "Academic" | "Volunteer" | "Mental Physical" | 'Discipline' | 'Reward' | 'Pioneering';
+     export type Category = "All" | "Academic" | "Volunteer" | "Mental Physical"
      export interface Faculty {
           name: string;
           value: string;
@@ -67,6 +67,7 @@ export namespace AppTypes {
           yearStart: number;
           yearEnd: number;
      }
+     
      export type PointDetail = {
           name: string;
           point: number;
@@ -126,12 +127,75 @@ export namespace AppTypes {
           updatedTestData: UpdatedTestData;
           location: string;
      }
-     export interface Student{
+
+
+     ////
+       export interface OptionV2{
+          id: string;
+          text: string;
+          label: string;
+     }
+     export interface QuestionV2{
+          id: string;
+          text: string;
+          options: OptionV2[];
+          correctOption: OptionV2;
+     }
+     export interface PostV2 {
+          id: string;
+          title: string;
+          description: string;
+          image?: string;
+          dateStart: number;
+          dateEnd: number;
+          points: number;
+          status: Status;
+          location: string;
+          tags: string[]      
+          category: Category;
+          students_joined?: string[];
+          total_students?: number;
+          semester: string;
+     }
+     export interface TestV2{
+          id: string;
+          title: string;
+          description: string;
+          image?: string;
+          dateStart: number;
+          dateEnd: number;
+          points: number;
+          status: Status;
+          location: string;
+          tags: string[];
+          category: Category;
+          students_joined?: string[];
+          total_students?: number;
+          semester: string;
+          questions: QuestionV2[];
+     }
+     export interface Activities {   
+          id: number;
+          name: string;
+          date: string;
+          points: number;
+     }
+     export interface Activity {
+          id: number;
+          name: string;
+          total_points: number;
+          activities: Activities[];
+     }
+     export interface Student {
           id: string;
           name: string;
           email: string;
-          facultyName: string;
-          trainingPoint: PointCategory;
-          activities: string[];
+          phone: string;
+          department: string;
+          totalActivities: number;
+          totalPoints: number;
+          joinDate: string;
+          categories: Activity[];
      }
+   
 }

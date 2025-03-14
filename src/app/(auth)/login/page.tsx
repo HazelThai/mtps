@@ -27,6 +27,8 @@ import LoadingButton from "@mui/lab/LoadingButton";
 import { userActions } from "@/store/me";
 import ErrorMessage from "@/app/components/@shared/text/ErrorMessage";
 import IconifyIcon from "@/app/components/@shared/icon/IconifyIcon";
+import { setToken } from "@/utils/token";
+import { useAuth } from "@/app/context/AuthContext";
 
 interface FormData {
   email: string;
@@ -40,6 +42,7 @@ export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const dispatch = useDispatch();
   const { loading } = useSelector((state) => state.auth);
+  const { login } = useAuth();
   const router = useRouter();
   const {
     control,
@@ -66,10 +69,13 @@ export default function Login() {
           password: form.password,
         })
       ).unwrap();
-      if (res?.data?.data?.role === "student") {
-        router.push("/student");
-      } else {
-        router.push("/faculty");
+      if (res?.data?.data) {
+        login(res?.data?.data?.token?.accessToken);
+        if (res.data.data.role === "assistant") {
+          router.push("/faculty");
+        } else {
+          router.push("/student");
+        }
       }
     } catch (error) {
       console.log(error);
