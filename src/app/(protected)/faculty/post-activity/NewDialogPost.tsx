@@ -8,18 +8,26 @@ import {
 } from "@mui/material";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { forwardRef, useImperativeHandle, useRef, useState } from "react";
+import {
+  forwardRef,
+  useImperativeHandle,
+  useRef,
+  useState,
+  useEffect,
+} from "react";
 import toast from "react-hot-toast";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import CustomTabs from "@/app/components/@shared/tabs/Tab";
 import dayjs from "dayjs";
-import ActivityForm from "./TestForm";
+import ActivityForm from "./ActivityForm";
 import TestForm from "./TestForm";
 
 type Options = {
   onOk?: (data: AppTypes.PostV2 | AppTypes.TestV2) => Promise<boolean>;
   onCancel: () => void;
+  initialData?: AppTypes.PostV2;
+  initialTab?: string;
 };
 const FormData: AppTypes.PostV2 = {
   id: "",
@@ -76,33 +84,31 @@ const NewDialogPost = forwardRef((_, ref) => {
   const [options, setOptions] = useState<Options & { open: boolean }>();
   const [tab, setTab] = useState<Tabs>(tabs[0]);
   const [newTag, setNewTag] = useState("");
-  const [tagColors, setTagColors] = useState<Record<string, string>>({});
 
-  // Function to get a random color for a tag
-  const getTagColor = (tag: string) => {
-    if (!tagColors[tag]) {
-      // Available MUI chip colors
-      const colors = [
-        "primary",
-        "secondary",
-        "success",
-        "error",
-        "info",
-        "warning",
-      ];
-      const randomColor = colors[Math.floor(Math.random() * colors.length)];
-      setTagColors((prev) => ({ ...prev, [tag]: randomColor }));
-      return randomColor;
-    }
-    return tagColors[tag];
-  };
 
-  const { control, handleSubmit, setValue, getValues } =
+  const { control, handleSubmit, setValue, getValues, reset } =
     useForm<AppTypes.PostV2>({
-      defaultValues: FormData,
+      defaultValues: options?.initialData || FormData,
       // resolver: yupResolver(schema),
       mode: "onChange",
     });
+
+  // Update form when initialData changes
+  useEffect(() => {
+    if (options?.initialData) {
+      reset(options.initialData);
+    }
+  }, [options?.initialData, reset]);
+
+  // Set initial tab if provided
+  useEffect(() => {
+    if (options?.initialTab) {
+      const initialTabObj =
+        tabs.find((t) => t.value === options.initialTab) || tabs[0];
+      setTab(initialTabObj);
+    }
+  }, [options?.initialTab]);
+
   const handleChangeTab = (event: React.SyntheticEvent, newValue: string) => {
     setTab(tabs.find((tab) => tab.value === newValue) || tabs[0]);
   };
@@ -133,6 +139,13 @@ const NewDialogPost = forwardRef((_, ref) => {
             ...options,
             open: true,
           });
+
+          // If initialTab is provided, set it
+          if (options.initialTab) {
+            const initialTabObj =
+              tabs.find((t) => t.value === options.initialTab) || tabs[0];
+            setTab(initialTabObj);
+          }
         },
         hide: () => {
           setOptions({
@@ -234,7 +247,11 @@ const NewDialogPost = forwardRef((_, ref) => {
       disableEscapeKeyDown={false}
     >
       <form noValidate autoComplete="off">
-        <DialogTitle>New Post / Activity</DialogTitle>
+        <DialogTitle>
+          {options?.initialData
+            ? "Edit Post / Activity"
+            : "New Post / Activity"}
+        </DialogTitle>
         <CustomTabs
           value={tab.value}
           onChange={handleChangeTab}
@@ -261,7 +278,6 @@ const NewDialogPost = forwardRef((_, ref) => {
                 newTag={newTag}
                 setNewTag={setNewTag}
                 handleAddTag={handleAddTag}
-                getTagColor={getTagColor}
                 pointsOptions={pointsOptions}
                 categoryOptions={categoryOptions}
                 semesterOptions={semesterOptions}
@@ -275,7 +291,6 @@ const NewDialogPost = forwardRef((_, ref) => {
                 newTag={newTag}
                 setNewTag={setNewTag}
                 handleAddTag={handleAddTag}
-                getTagColor={getTagColor}
                 pointsOptions={pointsOptions}
                 categoryOptions={categoryOptions}
                 semesterOptions={semesterOptions}

@@ -36,7 +36,6 @@ interface ActivityFormProps {
   newTag: string;
   setNewTag: (value: string) => void;
   handleAddTag: () => void;
-  getTagColor: (tag: string) => string;
   pointsOptions: { label: string; value: number }[];
   categoryOptions: { label: string; value: string }[];
   semesterOptions: { label: string; value: string }[];
@@ -57,8 +56,7 @@ const TestForm = ({
   newTag,
   setNewTag,
   handleAddTag,
-  getTagColor,
-  pointsOptions,
+  pointsOptions,  
   categoryOptions,
   semesterOptions,
 }: ActivityFormProps) => {
@@ -402,13 +400,7 @@ const TestForm = ({
                 key={tag}
                 label={tag}
                 color={
-                  getTagColor(tag) as
-                    | "primary"
-                    | "secondary"
-                    | "success"
-                    | "error"
-                    | "info"
-                    | "warning"
+                  "primary"
                 }
                 onDelete={() => {
                   setValue(

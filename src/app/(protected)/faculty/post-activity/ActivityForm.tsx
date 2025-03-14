@@ -27,7 +27,6 @@ interface PostFormProps {
   newTag: string;
   setNewTag: (value: string) => void;
   handleAddTag: () => void;
-  getTagColor: (tag: string) => string;
   pointsOptions: { label: string; value: number }[];
   categoryOptions: { label: string; value: string }[];
   semesterOptions: { label: string; value: string }[];
@@ -40,7 +39,6 @@ const ActivityForm = ({
   newTag,
   setNewTag,
   handleAddTag,
-  getTagColor,
   pointsOptions,
   categoryOptions,
   semesterOptions,
@@ -284,13 +282,7 @@ const ActivityForm = ({
                 key={tag}
                 label={tag}
                 color={
-                  getTagColor(tag) as
-                    | "primary"
-                    | "secondary"
-                    | "success"
-                    | "error"
-                    | "info"
-                    | "warning"
+                  "primary"
                 }
                 onDelete={() => {
                   setValue(

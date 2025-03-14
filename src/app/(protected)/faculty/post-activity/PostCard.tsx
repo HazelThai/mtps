@@ -18,6 +18,7 @@ import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
 import { useState } from "react";
 import { TabValue } from "./page";
+import { useNewDialogPost } from "./NewDialogPost";
 const mockData: AppTypes.PostV2[] = [
   {
     id: "1",
@@ -75,21 +76,48 @@ export default function PostCard({ value }: { value: TabValue }) {
   const [selectedPost, setSelectedPost] = useState<AppTypes.PostV2 | null>(
     null
   );
-  const handleOpen = (event: React.MouseEvent<HTMLElement>) => {
+  const { renderDialog, showDialog, hideDialog } = useNewDialogPost();
+
+  const handleOpen = (
+    event: React.MouseEvent<HTMLElement>,
+    post: AppTypes.PostV2
+  ) => {
     setAnchorEl(event.currentTarget);
+    setSelectedPost(post);
     setIsOpen(true);
   };
+
   const handleClose = () => {
     setAnchorEl(null);
     setIsOpen(false);
   };
+
+  const handleEdit = () => {
+    handleClose();
+    const initialTab = selectedPost?.location?.toLowerCase().includes("online")
+      ? "test"
+      : "activity";
+
+    showDialog({
+      onOk: async (data) => {
+        console.log("Updated data:", data);
+        return true;
+      },
+      onCancel: () => {},
+      initialData: selectedPost || undefined,
+      initialTab: initialTab,
+    });
+  };
+
   if (!posts) return null;
   const filteredPosts = posts.filter((post) => {
-    if (value === TabValue.ALL_POST) return true;
+    // Check if post is expired
+    const isExpired = dayjs.unix(post.dateEnd).isBefore(dayjs());
+
+    if (value === TabValue.ALL_POST) return !isExpired; // Exclude expired posts from All Post tab
     if (value === TabValue.PUBLIC_POST) return post.status === "Public";
     if (value === TabValue.PRIVATE_POST) return post.status === "Private";
-    if (value === TabValue.EXPIRED_POST)
-      return dayjs.unix(post.dateEnd).isBefore(dayjs());
+    if (value === TabValue.EXPIRED_POST) return isExpired;
   });
 
   return (
@@ -115,7 +143,7 @@ export default function PostCard({ value }: { value: TabValue }) {
             }}
           >
             <Box sx={{ position: "absolute", top: 0, right: 0 }}>
-              <Button onClick={(e) => handleOpen(e)}>
+              <Button onClick={(e) => handleOpen(e, post)}>
                 <MoreVerticalIcon color="black" />
               </Button>
             </Box>
@@ -125,8 +153,7 @@ export default function PostCard({ value }: { value: TabValue }) {
               onClose={handleClose}
               onClick={(e) => e.stopPropagation()}
             >
-              <MenuItem>View detail</MenuItem>
-              <MenuItem>Edit</MenuItem>
+              <MenuItem onClick={handleEdit}>Edit</MenuItem>
               <MenuItem>Delete</MenuItem>
             </Menu>
             <CardHeader
@@ -220,6 +247,7 @@ export default function PostCard({ value }: { value: TabValue }) {
           </Card>
         </motion.div>
       ))}
+      {renderDialog()}
     </AnimatePresence>
   );
 }
