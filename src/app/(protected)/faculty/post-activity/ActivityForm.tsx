@@ -21,9 +21,9 @@ import {
 } from "react-hook-form";
 
 interface PostFormProps {
-  control: Control<AppTypes.PostV2>;
-  getValues: UseFormGetValues<AppTypes.PostV2>;
-  setValue: UseFormSetValue<AppTypes.PostV2>;
+  control: Control<AppTypes.Post>;
+  getValues: UseFormGetValues<AppTypes.Post>;
+  setValue: UseFormSetValue<AppTypes.Post>;
   newTag: string;
   setNewTag: (value: string) => void;
   handleAddTag: () => void;
@@ -277,17 +277,15 @@ const ActivityForm = ({
             )}
           />
           <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap", mt: 3 }}>
-            {getValues("tags").map((tag) => (
+            {getValues("tags").map((tag: string) => (
               <Chip
                 key={tag}
                 label={tag}
-                color={
-                  "primary"
-                }
+                color={"primary"}
                 onDelete={() => {
                   setValue(
                     "tags",
-                    getValues("tags").filter((t) => t !== tag)
+                    getValues("tags").filter((t: string) => t !== tag)
                   );
                 }}
               />

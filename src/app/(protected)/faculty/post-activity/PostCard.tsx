@@ -19,7 +19,7 @@ import Image from "next/image";
 import { useState } from "react";
 import { TabValue } from "./page";
 import { useNewDialogPost } from "./NewDialogPost";
-const mockData: AppTypes.PostV2[] = [
+const mockData: AppTypes.Post[] = [
   {
     id: "1",
     title: "Post 1",
@@ -35,6 +35,9 @@ const mockData: AppTypes.PostV2[] = [
     total_students: 10,
     semester: "Semester 1",
     image: "",
+    faculty: "Faculty 1",
+    testId: "",
+    questions: [],
   },
   {
     id: "2",
@@ -51,6 +54,9 @@ const mockData: AppTypes.PostV2[] = [
     total_students: 10,
     semester: "Semester 2 (2024-2025)",
     image: "",
+    faculty: "Faculty 1",
+    testId: "",
+    questions: [],
   },
   {
     id: "3",
@@ -67,20 +73,23 @@ const mockData: AppTypes.PostV2[] = [
     total_students: 10,
     semester: "Semester 2 (2024-2025)",
     image: "",
+    faculty: "Faculty 1",
+    testId: "",
+    questions: [],
   },
 ];
 export default function PostCard({ value }: { value: TabValue }) {
   const [isOpen, setIsOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const [posts, setPosts] = useState<AppTypes.PostV2[]>(mockData);
-  const [selectedPost, setSelectedPost] = useState<AppTypes.PostV2 | null>(
+  const [posts, setPosts] = useState<AppTypes.Post[]>(mockData);
+  const [selectedPost, setSelectedPost] = useState<AppTypes.Post | null>(
     null
   );
   const { renderDialog, showDialog, hideDialog } = useNewDialogPost();
 
   const handleOpen = (
     event: React.MouseEvent<HTMLElement>,
-    post: AppTypes.PostV2
+    post: AppTypes.Post
   ) => {
     setAnchorEl(event.currentTarget);
     setSelectedPost(post);

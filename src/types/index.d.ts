@@ -19,23 +19,7 @@ export namespace AppTypes {
      export interface EmailRequest {
           email: string;
      }
-     export interface CreatePostRequest {
-          name: string;
-          desc: string;
-          facultyName: string;
-          status: Status;
-          startAt: number;
-          endAt: number;
-          location: string;
-          point: Point;
-          numberParticipants: number;
-          category: Category;
-          semester: string;
-     }
-     export interface CreateTestRequest {
-          questions: Question[];
-          target: number;
-     }
+
      export interface ChangePasswordRequest {
           id?: string;
           currentPassword: string;
@@ -48,24 +32,6 @@ export namespace AppTypes {
      export interface JoinPostRequest{
           studentId: string;
           postId: string;
-     }
-     export interface Post {
-          id: string;
-          name: string;
-          desc: string;
-          status: Status;
-          startAt: number;
-          endAt: number;
-          location: string;
-          numberParticipants: number;
-          facultyName: string;
-          category: Category;
-          point: Point;
-          stdJoin?: string[];
-          testId?: string;
-          semester: string;
-          yearStart: number;
-          yearEnd: number;
      }
      
      export type PointDetail = {
@@ -130,18 +96,23 @@ export namespace AppTypes {
 
 
      ////
-       export interface OptionV2{
+     export interface TabType{
+          title: string;
+          value: string;
+     }
+     export interface OptionV2{
           id: string;
           text: string;
-          label: string;
      }
      export interface QuestionV2{
           id: string;
           text: string;
           options: OptionV2[];
           correctOption: OptionV2;
+          isCompleted: boolean;
+          selectedOption?: number;
      }
-     export interface PostV2 {
+     export interface PostActivity {
           id: string;
           title: string;
           description: string;
@@ -156,23 +127,12 @@ export namespace AppTypes {
           students_joined?: string[];
           total_students?: number;
           semester: string;
+          faculty: string;
      }
-     export interface TestV2{
-          id: string;
-          title: string;
-          description: string;
-          image?: string;
-          dateStart: number;
-          dateEnd: number;
-          points: number;
-          status: Status;
-          location: string;
-          tags: string[];
-          category: Category;
-          students_joined?: string[];
-          total_students?: number;
-          semester: string;
+     export interface Post extends PostActivity {
+          testId: string;
           questions: QuestionV2[];
+          totalQuestions?: number;
      }
      export interface Activities {   
           id: number;

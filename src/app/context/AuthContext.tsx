@@ -53,5 +53,5 @@ export const useAuth = () => {
 };
 
 function removeToken() {
-  localStorage.removeItem("token");
+  localStorage.removeItem("TOKEN_KEY");
 }

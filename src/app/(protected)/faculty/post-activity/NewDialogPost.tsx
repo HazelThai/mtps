@@ -24,12 +24,12 @@ import ActivityForm from "./ActivityForm";
 import TestForm from "./TestForm";
 
 type Options = {
-  onOk?: (data: AppTypes.PostV2 | AppTypes.TestV2) => Promise<boolean>;
+  onOk?: (data: AppTypes.Post) => Promise<boolean>;
   onCancel: () => void;
-  initialData?: AppTypes.PostV2;
+  initialData?: AppTypes.Post;
   initialTab?: string;
 };
-const FormData: AppTypes.PostV2 = {
+const FormData: AppTypes.Post = {
   id: "",
   title: "",
   description: "",
@@ -42,6 +42,9 @@ const FormData: AppTypes.PostV2 = {
   category: "Academic",
   semester: "",
   image: "",
+  testId: "",
+  questions: [],
+  faculty: "",
 };
 interface Tabs {
   label: string;
@@ -65,7 +68,7 @@ const tabs: Tabs[] = [
   },
 ];
 const schema = yup.object().shape({
-  id: yup.string().required("ID is required"), // Ensure required if PostV2 requires it
+  id: yup.string().required("ID is required"),
   title: yup.string().required("Title is required"),
   description: yup.string().required("Description is required"),
   image: yup.string().optional(),
@@ -85,9 +88,8 @@ const NewDialogPost = forwardRef((_, ref) => {
   const [tab, setTab] = useState<Tabs>(tabs[0]);
   const [newTag, setNewTag] = useState("");
 
-
   const { control, handleSubmit, setValue, getValues, reset } =
-    useForm<AppTypes.PostV2>({
+    useForm<AppTypes.Post>({
       defaultValues: options?.initialData || FormData,
       // resolver: yupResolver(schema),
       mode: "onChange",
@@ -112,7 +114,7 @@ const NewDialogPost = forwardRef((_, ref) => {
   const handleChangeTab = (event: React.SyntheticEvent, newValue: string) => {
     setTab(tabs.find((tab) => tab.value === newValue) || tabs[0]);
   };
-  const handleOk = async (data: AppTypes.PostV2 | AppTypes.TestV2) => {
+  const handleOk = async (data: AppTypes.Post) => {
     try {
       setOptions({
         open: false,

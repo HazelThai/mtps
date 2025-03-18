@@ -1,18 +1,18 @@
 "use client";
 
 import StudentInformation from "@/app/components/features/student/StudentInformation";
-import { Box, Button, Typography } from "@mui/material";
-import { useParams, useRouter } from "next/navigation";
-import PersonIcon from "@mui/icons-material/Person";
-import EmailIcon from "@mui/icons-material/Email";
-import PhoneIcon from "@mui/icons-material/Phone";
-import SchoolIcon from "@mui/icons-material/School";
-import { CalendarIcon } from "@mui/x-date-pickers/icons";
-import { BadgeIcon } from "lucide-react";
-import { useState } from "react";
 import TabCategories from "@/app/components/features/student/TabCategories";
 import TableActivities from "@/app/components/features/student/TableActivities";
 import { AppTypes } from "@/types";
+import EmailIcon from "@mui/icons-material/Email";
+import PersonIcon from "@mui/icons-material/Person";
+import PhoneIcon from "@mui/icons-material/Phone";
+import SchoolIcon from "@mui/icons-material/School";
+import { Button } from "@mui/material";
+import { CalendarIcon } from "@mui/x-date-pickers/icons";
+import { BadgeIcon } from "lucide-react";
+import { useParams, useRouter } from "next/navigation";
+import { useState } from "react";
 export default function StudentDetails() {
   const { id } = useParams();
   const [selectedCategory, setSelectedCategory] = useState<string>("Academic");
@@ -111,19 +111,35 @@ export default function StudentDetails() {
       },
     ],
   });
-  const [isActive, setIsActive] = useState<boolean>(false);
-  const handleChangeCategory = (category: string) => {
-    setSelectedCategory(category);
-  };
+
   const router = useRouter();
-  const TAB_CATEGORIES = [
-    "Academic",
-    "Volunteer",
-    "Mental Physical",
-    "Discipline",
-    "Reward",
-    "Pioneering",
+  const TAB_CATEGORIES: AppTypes.TabType[] = [
+    {
+      title: "Academic",
+      value: "academic",
+    },
+    {
+      title: "Volunteer",
+      value: "volunteer",
+    },
+    {
+      title: "Mental Physical",
+      value: "mental_physical",
+    },
+    {
+      title: "Discipline",
+      value: "discipline",
+    },
+    {
+      title: "Reward",
+      value: "reward",
+    },
+    {
+      title: "Pioneering",
+      value: "pioneering",
+    },
   ];
+
   return (
     <div className="p-4 flex flex-col gap-10">
       <div className="flex justify-between items-center">
@@ -210,34 +226,15 @@ export default function StudentDetails() {
           <div className="w-full h-15 border-2 bg-black rounded-sm p-2 grid grid-cols-6 gap-6">
             {TAB_CATEGORIES.map((category) => (
               <TabCategories
-                key={category}
-                category={category}
-                isActive={selectedCategory === category}
-                onClick={() => setSelectedCategory(category)}
+                key={category.value}
+                category={category.title}
+                isActive={selectedCategory === category.title}
+                onClick={() => setSelectedCategory(category.title)}
               />
             ))}
-            {/* <TabCategories
-              category="Volunteer"
-              isActive={selectedCategory === "Volunteer"}
-            />
-            <TabCategories
-              category="Mental Physical"
-              isActive={selectedCategory === "Mental Physical"}
-            />
-            <TabCategories
-              category="Discipline"
-              isActive={selectedCategory === "Discipline"}
-            />
-            <TabCategories
-              category="Reward"
-              isActive={selectedCategory === "Reward"}
-            />
-            <TabCategories
-              category="Pioneering"
-              isActive={selectedCategory === "Pioneering"}
-            /> */}
           </div>
           <TableActivities
+            isFaculty={true}
             category={selectedCategory}
             total_points={
               student?.categories?.find(

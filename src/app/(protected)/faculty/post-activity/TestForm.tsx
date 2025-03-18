@@ -30,9 +30,9 @@ import {
 } from "react-hook-form";
 
 interface ActivityFormProps {
-  control: Control<AppTypes.PostV2>;
-  getValues: UseFormGetValues<AppTypes.PostV2>;
-  setValue: UseFormSetValue<AppTypes.PostV2>;
+  control: Control<AppTypes.Post>;
+  getValues: UseFormGetValues<AppTypes.Post>;
+  setValue: UseFormSetValue<AppTypes.Post>;
   newTag: string;
   setNewTag: (value: string) => void;
   handleAddTag: () => void;
@@ -56,11 +56,11 @@ const TestForm = ({
   newTag,
   setNewTag,
   handleAddTag,
-  pointsOptions,  
+  pointsOptions,
   categoryOptions,
   semesterOptions,
 }: ActivityFormProps) => {
-  const [testFormData, setTestFormData] = useState<AppTypes.TestV2>({
+  const [testFormData, setTestFormData] = useState<AppTypes.Post>({
     id: "",
     title: "",
     description: "",
@@ -73,6 +73,8 @@ const TestForm = ({
     category: "Academic",
     semester: "",
     questions: [],
+    testId: "",
+    faculty: "",
   });
 
   // Initialize with a default question
@@ -86,6 +88,7 @@ const TestForm = ({
           text: "",
           options: defaultOptions,
           correctOption: defaultOptions[0],
+          isCompleted: false,
         },
       ],
     }));
@@ -136,7 +139,7 @@ const TestForm = ({
           ? {
               ...q,
               correctOption:
-                q.options.find((o) => o.label === value) || q.options[0],
+                q.options.find((o) => o.text === value) || q.options[0],
             }
           : q
       ),
@@ -155,7 +158,8 @@ const TestForm = ({
           id: questionId,
           text: "",
           options: defaultOptions,
-          correctOption: defaultOptions[0], // Set option A as default correct answer
+          correctOption: defaultOptions[0],
+          isCompleted: false,
         },
       ],
     }));
@@ -395,17 +399,15 @@ const TestForm = ({
             )}
           />
           <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap", mt: 3 }}>
-            {getValues("tags").map((tag) => (
+            {getValues("tags").map((tag: string) => (
               <Chip
                 key={tag}
                 label={tag}
-                color={
-                  "primary"
-                }
+                color={"primary"}
                 onDelete={() => {
                   setValue(
                     "tags",
-                    getValues("tags").filter((t) => t !== tag)
+                    getValues("tags").filter((t: string) => t !== tag)
                   );
                 }}
               />
@@ -421,7 +423,6 @@ const TestForm = ({
           <Typography variant="body2" color="text.secondary" gutterBottom>
             Add at least 10 questions for your test
           </Typography>
-
           {testFormData.questions.map((question, index) => (
             <Paper key={question.id} elevation={2} sx={{ p: 2, mb: 2 }}>
               <Box
@@ -459,10 +460,10 @@ const TestForm = ({
 
               {question.options.map((option) => (
                 <Box key={option.id} display="flex" alignItems="center" mb={1}>
-                  <Typography sx={{ minWidth: 20 }}>{option.label}.</Typography>
+                  <Typography sx={{ minWidth: 20 }}>{option.text}.</Typography>
                   <TextField
                     fullWidth
-                    placeholder={`Option ${option.label}`}
+                    placeholder={`Option ${option.text}`}
                     value={option.text}
                     onChange={(e) =>
                       handleOptionChange(question.id, option.id, e.target.value)
@@ -477,7 +478,7 @@ const TestForm = ({
                 <FormLabel component="legend">Correct Answer</FormLabel>
                 <RadioGroup
                   row
-                  value={question.correctOption.label}
+                  value={question.correctOption.text}
                   onChange={(e) =>
                     handleCorrectAnswerChange(question.id, e.target.value)
                   }
@@ -485,16 +486,15 @@ const TestForm = ({
                   {question.options.map((option) => (
                     <FormControlLabel
                       key={option.id}
-                      value={option.label}
+                      value={option.text}
                       control={<Radio />}
-                      label={option.label}
+                      label={option.text}
                     />
                   ))}
                 </RadioGroup>
               </FormControl>
             </Paper>
           ))}
-
           <Button
             variant="outlined"
             startIcon={<Plus />}

@@ -4,6 +4,7 @@ export default function TableActivities({
   category,
   total_points,
   activities,
+  isFaculty,
 }: {
   category: string;
   total_points: number;
@@ -12,11 +13,12 @@ export default function TableActivities({
     date: string;
     points: number;
   }[];
+  isFaculty: boolean;
 }) {
   return (
     <div className="mt-10">
       <div className="flex items-center justify-between mb-5">
-        <p className="text-2xl font-bold">{category}</p>
+        <p className="text-2xl font-bold capitalize">{category}</p>
         <div className="flex items-center gap-2 bg-gray-300 rounded-lg p-2">
           <p>{total_points}</p>
           <p>Points</p>
@@ -53,7 +55,7 @@ export default function TableActivities({
             ))}
           </tbody>
         </table>
-        {category === "Discipline" && <DisciplineModal />}
+        {category === "Discipline" && isFaculty ? <DisciplineModal /> : <></>}
       </div>
     </div>
   );
